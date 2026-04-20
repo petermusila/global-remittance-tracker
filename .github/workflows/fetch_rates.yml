@@ -2,7 +2,7 @@ name: Fetch Exchange Rates
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '13 * * * *'  # Runs at 13 minutes past every hour
   workflow_dispatch:
 
 jobs:
