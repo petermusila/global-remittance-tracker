@@ -8,6 +8,9 @@ on:
 jobs:
   fetch-rates:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,6 +24,3 @@ jobs:
           pip install supabase
       - name: Run fetch script
         run: python fetch_rates.py
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
