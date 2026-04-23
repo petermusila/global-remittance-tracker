@@ -14,64 +14,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Reduce padding and spacing
+# Custom CSS - ONLY fixes white table background
 st.markdown("""
 <style>
-    .block-container {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0rem !important;
-    }
-    hr {
-        margin: 0.5rem 0 !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Custom CSS for complete dark mode - all text visible
-st.markdown("""
-<style>
-    /* Main background */
-    .stApp {
-        background: linear-gradient(135deg, #0f0c29, #1a1a3e, #24243e);
-    }
-    
-    /* Force all text to be white */
-    .stApp, .main, .stMarkdown, .stText, .stCaption, .stSubheader, .stHeader,
-    p, span, div, label, .stSelectbox label, .stNumberInput label,
-    .stRadio label, .stRadio span, .stCheckbox label, .stTextInput label {
-        color: #ffffff !important;
-    }
-    
-    /* Headers */
-    h1, h2, h3, h4, h5, .stTitle {
-        color: #ffffff !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Metric cards - fix for "Current Rate", "Top Gainer", "Top Loser" */
-    div[data-testid="stMetric"] {
-        background-color: rgba(30,30,60,0.8) !important;
-        border-radius: 10px;
-        padding: 15px;
-        border: 1px solid #444;
-    }
-    
-    div[data-testid="stMetricValue"] {
-        color: #00ff88 !important;
-        font-size: 1.8rem !important;
-        font-weight: bold !important;
-    }
-    
-    div[data-testid="stMetricLabel"] {
-        color: #ffffff !important;
-        font-size: 1rem !important;
-    }
-    
-    div[data-testid="stMetricDelta"] {
-        color: #ffaa00 !important;
-    }
-    
-    /* Fix for dataframe/table - dark background */
+    /* Fix for white table background - THIS IS THE MAIN FIX */
     .stDataFrame, .stDataFrame table, .dataframe, table {
         background-color: #1e1e2e !important;
         color: #ffffff !important;
@@ -80,88 +26,50 @@ st.markdown("""
     .stDataFrame th, .dataframe th, table th {
         background-color: #2a2a4a !important;
         color: #ffffff !important;
-        font-weight: bold !important;
-        padding: 8px !important;
     }
     
     .stDataFrame td, .dataframe td, table td {
         background-color: #1a1a2e !important;
         color: #ffffff !important;
-        padding: 8px !important;
     }
     
-    /* Fix for any white backgrounds in tables */
-    div[data-testid="stDataFrame"] div[data-testid="StyledTable"] {
-        background-color: #1e1e2e !important;
+    /* Make all text white */
+    .stMarkdown, .stText, .stCaption, .stSubheader, .stHeader, p, span, div, label {
+        color: #ffffff !important;
     }
     
-    /* Select boxes and inputs */
-    .stSelectbox > div > div {
-        background-color: #333 !important;
-        color: white !important;
+    h1, h2, h3, h4 {
+        color: #ffffff !important;
     }
     
-    select, input, .stSelectbox select {
-        background-color: #333 !important;
-        color: white !important;
-        border: 1px solid #555 !important;
+    /* Metric cards */
+    div[data-testid="stMetricValue"] {
+        color: #00ff88 !important;
+    }
+    
+    div[data-testid="stMetricLabel"] {
+        color: #ffffff !important;
     }
     
     /* Alert boxes */
     .stAlert {
         background-color: #1e1e2e !important;
-        border-left: 4px solid #00ff88 !important;
         color: #ffffff !important;
     }
     
-    .stAlert p, .stAlert div {
+    /* Select boxes */
+    .stSelectbox label, .stNumberInput label {
         color: #ffffff !important;
     }
     
-    .stSuccess {
-        background-color: #0a2e1a !important;
-        border-left-color: #00ff88 !important;
-    }
-    
-    .stInfo {
-        background-color: #0a1a3e !important;
-        border-left-color: #3388ff !important;
-    }
-    
-    .stWarning {
-        background-color: #3e2e0a !important;
-        border-left-color: #ffaa00 !important;
+    select, input {
+        background-color: #333 !important;
+        color: white !important;
     }
     
     /* Divider */
     hr {
         border-color: #444 !important;
-        margin: 15px 0 !important;
-    }
-    
-    /* Radio buttons */
-    .stRadio > div {
-        background-color: transparent !important;
-    }
-    
-    .stRadio label {
-        color: #ffffff !important;
-    }
-    
-    /* Number input */
-    .stNumberInput input {
-        background-color: #333 !important;
-        color: white !important;
-    }
-    
-    /* Caption */
-    .stCaption, caption {
-        color: #aaa !important;
-    }
-    
-    /* Fix for any remaining white elements */
-    .css-1y4p8pa, .css-1v3fvcr, .css-16idsys {
-        background-color: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -273,6 +181,7 @@ if not df.empty:
         converted_amount = amount * converter_rate[0]
         st.success(f"💰 {amount} {from_currency} = **{converted_amount:,.2f} {to_currency}**")
         
+        # Send money button
         st.markdown(f"""
         <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; margin-top: 10px;">
             <p style="margin: 0; color: white;">✈️ <strong>Ready to send?</strong> Compare rates at:</p>
