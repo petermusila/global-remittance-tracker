@@ -14,62 +14,112 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS - ONLY fixes white table background
+# Custom CSS for better visibility on dark background
 st.markdown("""
 <style>
-    /* Fix for white table background - THIS IS THE MAIN FIX */
-    .stDataFrame, .stDataFrame table, .dataframe, table {
-        background-color: #1e1e2e !important;
+    /* Main background */
+    .stApp {
+        background: linear-gradient(135deg, #0f0c29, #1a1a3e, #24243e);
+    }
+    
+    /* Make all main text white */
+    .main, .stMarkdown, .stText, .stCaption, .stSubheader, .stHeader {
         color: #ffffff !important;
     }
     
-    .stDataFrame th, .dataframe th, table th {
-        background-color: #2a2a4a !important;
+    /* Headers */
+    h1, h2, h3, h4, .stTitle {
         color: #ffffff !important;
-    }
-    
-    .stDataFrame td, .dataframe td, table td {
-        background-color: #1a1a2e !important;
-        color: #ffffff !important;
-    }
-    
-    /* Make all text white */
-    .stMarkdown, .stText, .stCaption, .stSubheader, .stHeader, p, span, div, label {
-        color: #ffffff !important;
-    }
-    
-    h1, h2, h3, h4 {
-        color: #ffffff !important;
+        font-weight: 600 !important;
     }
     
     /* Metric cards */
     div[data-testid="stMetricValue"] {
         color: #00ff88 !important;
+        font-size: 2rem !important;
+        font-weight: bold !important;
     }
     
     div[data-testid="stMetricLabel"] {
-        color: #ffffff !important;
+        color: #cccccc !important;
     }
     
-    /* Alert boxes */
-    .stAlert {
-        background-color: #1e1e2e !important;
-        color: #ffffff !important;
+    div[data-testid="stMetricDelta"] {
+        color: #ffaa00 !important;
     }
     
-    /* Select boxes */
+    /* Dataframe / Table text */
+    .dataframe, .stDataFrame, div[data-testid="stDataFrame"] table {
+        color: #ffffff !important;
+        background-color: rgba(0,0,0,0.6) !important;
+    }
+    
+    .dataframe th, .stDataFrame th {
+        background-color: #2a2a4a !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+    }
+    
+    .dataframe td, .stDataFrame td {
+        color: #ffffff !important;
+        background-color: rgba(0,0,0,0.4) !important;
+    }
+    
+    /* Select boxes and inputs */
     .stSelectbox label, .stNumberInput label {
         color: #ffffff !important;
     }
     
     select, input {
-        background-color: #333 !important;
-        color: white !important;
+        color: #000000 !important;
+        background-color: #ffffff !important;
+    }
+    
+    /* Info, success, warning boxes */
+    .stAlert {
+        background-color: rgba(0,0,0,0.7) !important;
+        color: #ffffff !important;
+    }
+    
+    .stAlert p {
+        color: #ffffff !important;
+    }
+    
+    /* Success message */
+    .stSuccess {
+        background-color: rgba(0,100,0,0.7) !important;
+    }
+    
+    /* Info message */
+    .stInfo {
+        background-color: rgba(0,0,100,0.7) !important;
+    }
+    
+    /* Warning message */
+    .stWarning {
+        background-color: rgba(100,60,0,0.7) !important;
+    }
+    
+    /* Tabs and radio buttons */
+    .stRadio label, .stRadio span {
+        color: #ffffff !important;
+    }
+    
+    /* Caption text */
+    .stCaption, caption {
+        color: #aaaaaa !important;
     }
     
     /* Divider */
     hr {
-        border-color: #444 !important;
+        border-color: #444444 !important;
+    }
+    
+    /* Metric background */
+    div[data-testid="metric-container"] {
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -123,9 +173,10 @@ if not df.empty:
     
     st.divider()
     
-    # ============ TOP GAINERS / LOSERS SECTION ============
+    # ============ TOP GAINERS / LOSERS SECTION (New) ============
     st.subheader("📈 Top Movers (Last 24 Hours)")
     
+    # Calculate 24-hour changes
     twenty_four_hours_ago = datetime.now() - timedelta(hours=24)
     df_24h = df[df['fetched_at'] >= twenty_four_hours_ago]
     
@@ -181,10 +232,10 @@ if not df.empty:
         converted_amount = amount * converter_rate[0]
         st.success(f"💰 {amount} {from_currency} = **{converted_amount:,.2f} {to_currency}**")
         
-        # Send money button
+        # Send money button (new)
         st.markdown(f"""
         <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; margin-top: 10px;">
-            <p style="margin: 0; color: white;">✈️ <strong>Ready to send?</strong> Compare rates at:</p>
+            <p style="margin: 0;">✈️ <strong>Ready to send?</strong> Compare rates at:</p>
             <a href="https://wise.com/us/currency-converter/{from_currency}-to-{to_currency}-rate?sourceAmount={amount}" target="_blank">
                 <button style="background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 5px; margin-top: 5px; cursor: pointer;">
                     💸 Send with Wise →
@@ -271,6 +322,7 @@ if not df.empty:
     }
     chart_base, chart_target = chart_map[chart_pair]
     
+    # Time range selector
     time_range = st.radio("Select time range", ["Last 24 Hours", "Last 7 Days"], horizontal=True)
     
     if time_range == "Last 24 Hours":
@@ -302,9 +354,11 @@ if not df.empty:
     # ============ RECENT RATES WITH 24H CHANGE ============
     st.subheader("📋 Recent Rates with 24-Hour Change")
     
+    # Calculate 24h change for recent rates
     recent = df.tail(15)[['base_currency', 'target_currency', 'rate', 'fetched_at']].copy()
     recent = recent.sort_values('fetched_at', ascending=False)
     
+    # Add 24h change column
     changes_24h = []
     for idx, row in recent.iterrows():
         pair_24h = df[(df['base_currency']==row['base_currency']) & 
@@ -319,6 +373,7 @@ if not df.empty:
     
     recent['24h Change'] = changes_24h
     
+    # Format for display
     recent_display = recent[['base_currency', 'target_currency', 'rate', '24h Change', 'fetched_at']].copy()
     recent_display.columns = ['From', 'To', 'Rate', '24h Change', 'Time']
     recent_display['Rate'] = recent_display['Rate'].round(2)
@@ -327,7 +382,7 @@ if not df.empty:
     
     st.caption(f"📡 Last updated: {df['fetched_at'].max().strftime('%Y-%m-%d %H:%M:%S')} | Data refreshes every hour")
     
-    # ============ SOCIAL PROOF SECTION ============
+    # ============ SOCIAL PROOF SECTION (New) ============
     st.divider()
     st.subheader("⚡ Why Trust This Data?")
     
@@ -341,6 +396,7 @@ if not df.empty:
     
     st.caption("📈 Data fetched automatically via GitHub Actions. No manual intervention. Fully open source.")
     
+    # GitHub link
     st.markdown("""
     <div style="text-align: center; margin-top: 20px;">
         <a href="https://github.com/petermusila/global-remittance-tracker" target="_blank">
