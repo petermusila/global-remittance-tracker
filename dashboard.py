@@ -14,112 +14,32 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for better visibility on dark background
+# Custom CSS for better styling
 st.markdown("""
 <style>
-    /* Main background */
     .stApp {
-        background: linear-gradient(135deg, #0f0c29, #1a1a3e, #24243e);
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     }
-    
-    /* Make all main text white */
-    .main, .stMarkdown, .stText, .stCaption, .stSubheader, .stHeader {
-        color: #ffffff !important;
+    .main > div {
+        background: rgba(255,255,255,0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 10px 0;
     }
-    
-    /* Headers */
-    h1, h2, h3, h4, .stTitle {
-        color: #ffffff !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Metric cards */
-    div[data-testid="stMetricValue"] {
-        color: #00ff88 !important;
-        font-size: 2rem !important;
-        font-weight: bold !important;
-    }
-    
-    div[data-testid="stMetricLabel"] {
-        color: #cccccc !important;
-    }
-    
-    div[data-testid="stMetricDelta"] {
-        color: #ffaa00 !important;
-    }
-    
-    /* Dataframe / Table text */
-    .dataframe, .stDataFrame, div[data-testid="stDataFrame"] table {
-        color: #ffffff !important;
-        background-color: rgba(0,0,0,0.6) !important;
-    }
-    
-    .dataframe th, .stDataFrame th {
-        background-color: #2a2a4a !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-    }
-    
-    .dataframe td, .stDataFrame td {
-        color: #ffffff !important;
-        background-color: rgba(0,0,0,0.4) !important;
-    }
-    
-    /* Select boxes and inputs */
-    .stSelectbox label, .stNumberInput label {
-        color: #ffffff !important;
-    }
-    
-    select, input {
-        color: #000000 !important;
-        background-color: #ffffff !important;
-    }
-    
-    /* Info, success, warning boxes */
-    .stAlert {
-        background-color: rgba(0,0,0,0.7) !important;
-        color: #ffffff !important;
-    }
-    
-    .stAlert p {
-        color: #ffffff !important;
-    }
-    
-    /* Success message */
-    .stSuccess {
-        background-color: rgba(0,100,0,0.7) !important;
-    }
-    
-    /* Info message */
-    .stInfo {
-        background-color: rgba(0,0,100,0.7) !important;
-    }
-    
-    /* Warning message */
-    .stWarning {
-        background-color: rgba(100,60,0,0.7) !important;
-    }
-    
-    /* Tabs and radio buttons */
-    .stRadio label, .stRadio span {
-        color: #ffffff !important;
-    }
-    
-    /* Caption text */
-    .stCaption, caption {
-        color: #aaaaaa !important;
-    }
-    
-    /* Divider */
-    hr {
-        border-color: #444444 !important;
-    }
-    
-    /* Metric background */
-    div[data-testid="metric-container"] {
-        background-color: rgba(255,255,255,0.1);
+    .stMetric {
+        background: rgba(255,255,255,0.1);
         border-radius: 10px;
         padding: 10px;
+    }
+    h1, h2, h3 {
+        color: #ffffff !important;
+    }
+    .stMarkdown, .stText, .stCaption {
+        color: #e0e0e0 !important;
+    }
+    div[data-testid="stDataFrame"] {
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
