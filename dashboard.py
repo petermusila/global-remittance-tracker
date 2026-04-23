@@ -305,3 +305,58 @@ if not df.empty:
     st.caption(f"Last updated: {df['fetched_at'].max()} | Data updates every hour")
 else:
     st.warning("No data yet. The automated fetcher will start collecting data soon.")
+  
+    # ============ RECENT RATES WITH 24H CHANGE ============
+    st.subheader("📋 Recent Rates with 24-Hour Change")
+    
+    recent = df.tail(15)[['base_currency', 'target_currency', 'rate', 'fetched_at']].copy()
+    recent = recent.sort_values('fetched_at', ascending=False)
+    
+    changes_24h = []
+    for idx, row in recent.iterrows():
+        pair_24h = df[(df['base_currency']==row['base_currency']) & 
+                      (df['target_currency']==row['target_currency']) &
+                      (df['fetched_at'] >= row['fetched_at'] - timedelta(hours=24))]
+        if len(pair_24h) >= 2:
+            old_rate = pair_24h.iloc[0]['rate']
+            change = ((row['rate'] - old_rate) / old_rate) * 100
+            changes_24h.append(f"{change:+.2f}%")
+        else:
+            changes_24h.append("N/A")
+    
+    recent['24h Change'] = changes_24h
+    
+    recent_display = recent[['base_currency', 'target_currency', 'rate', '24h Change', 'fetched_at']].copy()
+    recent_display.columns = ['From', 'To', 'Rate', '24h Change', 'Time']
+    recent_display['Rate'] = recent_display['Rate'].round(2)
+    
+    st.dataframe(recent_display, use_container_width=True)
+    
+    st.caption(f"📡 Last updated: {df['fetched_at'].max().strftime('%Y-%m-%d %H:%M:%S')} | Data refreshes every hour")
+    
+    # ============ SOCIAL PROOF SECTION ============
+    st.divider()
+    st.subheader("⚡ Why Trust This Data?")
+    
+    col_proof1, col_proof2, col_proof3 = st.columns(3)
+    with col_proof1:
+        st.metric("🕐 Update Frequency", "Every Hour", delta="Automated")
+    with col_proof2:
+        st.metric("📊 Data Points", f"{len(df):,}", delta="And growing")
+    with col_proof3:
+        st.metric("🔗 Data Source", "ExchangeRate API", delta="Live")
+    
+    st.caption("📈 Data fetched automatically via GitHub Actions. No manual intervention. Fully open source.")
+    
+    st.markdown("""
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="https://github.com/petermusila/global-remittance-tracker" target="_blank">
+            <button style="background: #333; color: white; border: 1px solid #555; padding: 8px 16px; border-radius: 5px; cursor: pointer;">
+                📁 View Source Code on GitHub
+            </button>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+else:
+    st.warning("No data yet. The automated fetcher will start collecting data soon.")
