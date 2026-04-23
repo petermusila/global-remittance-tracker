@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ============ CUSTOM CSS FOR PERFECT VISIBILITY ============
+# ============ CUSTOM CSS - FORCES ALL TABLES TO DARK BACKGROUND ============
 st.markdown("""
 <style>
     /* Main app background */
@@ -21,19 +21,17 @@ st.markdown("""
         background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
     }
     
-    /* All text white by default */
+    /* All text white */
     .stMarkdown, .stText, .stCaption, .stSubheader, .stHeader, 
     p, span, div, label, .stSelectbox label, .stNumberInput label {
         color: #ffffff !important;
     }
     
-    /* Headers */
     h1, h2, h3, h4, h5 {
         color: #ffffff !important;
-        font-weight: 600 !important;
     }
     
-    /* Metric cards - fully visible */
+    /* Metric cards */
     div[data-testid="stMetric"] {
         background-color: #1e1e3a !important;
         border-radius: 12px;
@@ -49,58 +47,74 @@ st.markdown("""
     
     div[data-testid="stMetricLabel"] {
         color: #ffffff !important;
-        font-size: 1rem !important;
     }
     
-    /* Tables - DARK BACKGROUND FIX */
+    /* ============ FORCE ALL TABLES TO DARK BACKGROUND ============ */
+    /* Streamlit dataframe */
     .stDataFrame {
         background-color: #1a1a2e !important;
         border-radius: 10px;
-        overflow-x: auto;
     }
     
     .stDataFrame table {
         background-color: #1a1a2e !important;
-        width: 100%;
+        border-collapse: collapse !important;
+        width: 100% !important;
     }
     
-    .stDataFrame th {
+    .stDataFrame thead tr th {
         background-color: #2a2a4a !important;
         color: #ffffff !important;
         font-weight: bold !important;
         padding: 10px !important;
-        border-bottom: 2px solid #4a4a6a !important;
+        border: 1px solid #3a3a5a !important;
     }
     
-    .stDataFrame td {
+    .stDataFrame tbody tr td {
         background-color: #1e1e36 !important;
         color: #ffffff !important;
         padding: 8px !important;
-        border-bottom: 1px solid #2a2a4a !important;
+        border: 1px solid #2a2a4a !important;
     }
     
-    .stDataFrame tr:hover td {
+    .stDataFrame tbody tr:hover td {
         background-color: #2a2a4a !important;
     }
     
-    /* Regular tables (pd.DataFrame) */
-    table.dataframe {
+    /* Pandas dataframe */
+    .dataframe {
         background-color: #1a1a2e !important;
-        width: 100%;
-        border-collapse: collapse;
+        border-collapse: collapse !important;
+        width: 100% !important;
     }
     
-    table.dataframe th {
+    .dataframe th {
         background-color: #2a2a4a !important;
         color: #ffffff !important;
         padding: 10px !important;
-        text-align: left !important;
+        border: 1px solid #3a3a5a !important;
     }
     
-    table.dataframe td {
+    .dataframe td {
         background-color: #1e1e36 !important;
         color: #ffffff !important;
         padding: 8px !important;
+        border: 1px solid #2a2a4a !important;
+    }
+    
+    /* Any other tables */
+    table {
+        background-color: #1a1a2e !important;
+    }
+    
+    th {
+        background-color: #2a2a4a !important;
+        color: #ffffff !important;
+    }
+    
+    td {
+        background-color: #1e1e36 !important;
+        color: #ffffff !important;
     }
     
     /* Alert boxes */
@@ -167,12 +181,12 @@ st.markdown("""
         color: #ffffff !important;
     }
     
-    /* Caption text */
+    /* Caption */
     .stCaption, caption {
         color: #a0a0c0 !important;
     }
     
-    /* Button styling */
+    /* Button */
     .stButton button {
         background-color: #4a4a6a !important;
         color: white !important;
@@ -182,19 +196,6 @@ st.markdown("""
     
     .stButton button:hover {
         background-color: #5a5a7a !important;
-    }
-    
-    /* Success message styling */
-    .stSuccess {
-        background-color: #0a2e1a !important;
-        border-left: 4px solid #00ff88 !important;
-    }
-    
-    /* Table container */
-    .dataframe-container {
-        background-color: #1a1a2e;
-        border-radius: 10px;
-        padding: 5px;
     }
 </style>
 """, unsafe_allow_html=True)
