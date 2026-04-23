@@ -118,3 +118,9 @@ python fetch_rates.py
 
 # Run the dashboard locally
 streamlit run dashboard.py
+
+👤 Author
+Peter Musila
+GitHub: @petermusila
+Project Link: https://github.com/petermusila/global-remittance-tracker
+Live Demo: https://global-remittance-tracker.streamlit.app
