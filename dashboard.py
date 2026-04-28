@@ -455,7 +455,6 @@ if dr3:
             f"Received ({dest_c})": f"{rcv:,.0f}",
         })
     rcv_col = f"Received ({dest_c})"
-    mf_table(rows3, best_key=rcv_col, green_col=rcv_col, muted_col="Fee (USD)")
     best3 = min(rows3, key=lambda r: float(r["Fee (USD)"].replace("$", "")))
     st.success(f"▲ Lowest fees via {best3['Service']} → {best3[rcv_col]} {dest_c} received")
 
@@ -531,13 +530,16 @@ for lbl, (src, pivot) in SOURCES.items():
         continue
     sa  = cmp_amt * get_rate("USD", src) if pivot and get_rate("USD", src) else cmp_amt
     rcv = sa * dr5
-    crows.append({"Sending from": lbl, f"Received ({cmp_dest})": f"{rcv:,.0f}"})
+    crows.append({"label": lbl, "rcv": rcv})
 
 if crows:
-    rc5 = f"Received ({cmp_dest})"
-    mf_table(crows, best_key=rc5, green_col=rc5)
-    best5 = max(crows, key=lambda r: float(r[rc5].replace(",", "")))
-    st.success(f"▲ Best value from {best5['Sending from']}")
+    best_rcv = max(crows, key=lambda r: r["rcv"])
+    mc5 = st.columns(len(crows))
+    for col, row in zip(mc5, crows):
+        is_best = row["rcv"] == best_rcv["rcv"]
+        delta   = "▲ Best value" if is_best else None
+        col.metric(row["label"], f"{row['rcv']:,.0f} {cmp_dest}", delta=delta)
+    st.success(f"▲ Best value from {best_rcv['label']} — most {cmp_dest} per USD equivalent")
 else:
     st.warning("Comparison data unavailable.")
 
@@ -576,19 +578,18 @@ else:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 07 · RECENT RATES LOG
+# 07 · RECENT RATES LOG  (collapsed — for power users / pipeline debugging)
 # ══════════════════════════════════════════════════════════════════════════════
 st.divider()
-mf_sec("07", "Recent Rates Log")
-
-recent = (df.tail(20)[["base_currency", "target_currency", "rate", "fetched_at"]]
-            .sort_values("fetched_at", ascending=False).copy())
-recent["fetched_at"] = recent["fetched_at"].dt.strftime("%d %b  %H:%M")
-recent["rate"]       = recent["rate"].apply(lambda x: f"{x:,.4f}")
-recent.columns       = ["From", "To", "Rate", "Fetched At"]
-mf_table(recent.to_dict("records"), green_col="Rate", blue_col="From",
-         muted_col="Fetched At")
-st.caption("Showing latest 20 records · Pipeline refreshes every hour")
+with st.expander("🔬 Raw data log — last 20 records", expanded=False):
+    recent = (df.tail(20)[["base_currency", "target_currency", "rate", "fetched_at"]]
+                .sort_values("fetched_at", ascending=False).copy())
+    recent["fetched_at"] = recent["fetched_at"].dt.strftime("%d %b  %H:%M")
+    recent["rate"]       = recent["rate"].apply(lambda x: f"{x:,.4f}")
+    recent.columns       = ["From", "To", "Rate", "Fetched At"]
+    mf_table(recent.to_dict("records"), green_col="Rate", blue_col="From",
+             muted_col="Fetched At")
+    st.caption("Pipeline refreshes every hour via GitHub Actions")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
